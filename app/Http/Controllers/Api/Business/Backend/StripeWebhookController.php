@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Business\Subscriptions;
+namespace App\Http\Controllers\Api\Business\Backend;
 
 
 use Stripe\Webhook;

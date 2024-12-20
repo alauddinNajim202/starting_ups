@@ -2,8 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Business\Auth\AuthController;
-use App\Http\Controllers\Api\Business\Subscriptions\SubscriptionController;
-use App\Http\Controllers\Api\Business\Subscriptions\StripeWebhookController;
+use App\Http\Controllers\Api\Business\Backend\SubscriptionController;
+use App\Http\Controllers\Api\Business\Backend\StripeWebhookController;
 
 // Public routes
 Route::post('register', [AuthController::class, 'register']);
@@ -16,6 +16,9 @@ Route::group([
     'prefix' => 'auth',
 
 ], function () {
+
+
+
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('profile', [AuthController::class, 'profile']);
@@ -44,6 +47,8 @@ Route::group([
     Route::post('/subscription/webhooks/stripe', [StripeWebhookController::class, 'handle']);
 
 
+
+    // business profile routes
 
 
 });
