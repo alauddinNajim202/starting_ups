@@ -96,6 +96,25 @@ class AuthController extends Controller
     public function profile()
     {
         $user = auth('api')->user();
+
+        // if not found
+        if (!$user) {
+            return $this->error([], 'User not found.', 404);
+        }
+
+
+        // return user profile
+        $user = [
+            'full_name' => $user->full_name,
+            'user_name' => $user->user_name,
+            'email' => $user->email,
+            'country' => $user->country,
+            'date_of_birth' => $user->date_of_birth,
+
+        ];
+
+
+
         return $this->success($user, 'Profile retrieved successfully.');
     }
 

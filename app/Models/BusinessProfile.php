@@ -13,6 +13,9 @@ class BusinessProfile extends Model
     use SoftDeletes;
 
 
+    protected $guarded = [];
+
+
 
 
 
