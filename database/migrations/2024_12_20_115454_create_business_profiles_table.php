@@ -20,8 +20,7 @@ return new class extends Migration
             $table->integer('sub_category_id');
             $table->enum('activity', ['Indoor', 'Outdoor'])->default('Indoor');
 
-            $table->string('street_address')->nullable();
-            $table->string('city')->nullable();
+            $table->string('location')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

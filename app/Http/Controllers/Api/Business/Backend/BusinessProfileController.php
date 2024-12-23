@@ -29,8 +29,8 @@ class BusinessProfileController extends Controller
             'category_id' => 'required|integer',
             'sub_category_id' => 'required|integer',
             'activity' => 'required|in:Indoor,Outdoor',
-            'street_address' => 'required|string',
-            'city' => 'required|string',
+
+            'location' => 'required|string',
             'hours' => 'required|array',
             'hours.*.day' => 'required|string',
             'hours.*.is_closed' => 'required|boolean',
@@ -45,8 +45,8 @@ class BusinessProfileController extends Controller
                 'category_id' => $validatedData['category_id'],
                 'sub_category_id' => $validatedData['sub_category_id'],
                 'activity' => $validatedData['activity'],
-                'street_address' => $validatedData['street_address'],
-                'city' => $validatedData['city'],
+                'location' => $validatedData['location'],
+
             ]
         );
 
@@ -83,7 +83,7 @@ class BusinessProfileController extends Controller
             return $this->error([], 'Business Profile not found', 404);
         }
 
-        $businessProfile->cover = url($businessProfile->cover);
+        $businessProfile->cover = $businessProfile->cover ?  url($businessProfile->cover) : null;
 
         // load business hours
         $businessProfile->load('business_hours');
@@ -121,8 +121,8 @@ class BusinessProfileController extends Controller
             'category_id' => 'required|integer',
             'sub_category_id' => 'required|integer',
             'activity' => 'required|in:Indoor,Outdoor',
-            'street_address' => 'required|string',
-            'city' => 'required|string',
+            'location' => 'required|string',
+
             'hours' => 'required|array',
             'hours.*.day' => 'required|string',
             'hours.*.is_closed' => 'required|boolean',
@@ -136,8 +136,9 @@ class BusinessProfileController extends Controller
             'category_id' => $validatedData['category_id'],
             'sub_category_id' => $validatedData['sub_category_id'],
             'activity' => $validatedData['activity'],
-            'street_address' => $validatedData['street_address'],
-            'city' => $validatedData['city'],
+            'location' => $validatedData['location'],
+
+
         ]);
 
 
