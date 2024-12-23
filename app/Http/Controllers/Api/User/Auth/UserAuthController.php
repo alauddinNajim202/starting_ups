@@ -272,4 +272,28 @@ class UserAuthController extends Controller
     }
 
 
+
+
+
+
+    // logout
+    public function logout()
+    {
+        try {
+
+            if (!auth('api')->check()) {
+                return $this->error([], 'User not found.', 404);
+            }
+
+            auth('api')->logout();
+
+            return $this->success('Successfully loged out.', 200);
+        } catch (Exception $e) {
+
+            Log::error($e->getMessage());
+            return $this->error([], $e->getMessage(), 500);
+        }
+    }
+
+
 }
