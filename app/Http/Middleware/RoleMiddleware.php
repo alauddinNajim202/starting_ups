@@ -18,33 +18,51 @@ class RoleMiddleware
      */
     public function handle(Request $request, Closure $next, $role)
     {
-        
-       
+
+
         if (!Auth::guard('user')->check()) {
             return response()->json(['message' => 'Unauthorized'], 401);
             // return $this->error('unauthorize access' , 401);
         }
 
-       
+
         if (Auth::guard('user')->user()->role !== $role) {
-          
+
             return response()->json([
                 'status' => 'Forbidden',
                 'message' => 'You do not have permission to access this resource.',
                 'code' => 403
                 ], 403);
-            
+
         }
 
 
-        
+        if (!Auth::guard('business')->check()) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+            // return $this->error('unauthorize access' , 401);
+        }
+
+
+        if (Auth::guard('business')->user()->role !== $role) {
+
+            return response()->json([
+                'status' => 'Forbidden',
+                'message' => 'You do not have permission to access this resource.',
+                'code' => 403
+                ], 403);
+
+        }
+
+
+
+
         if (!Auth::guard('admin')->check()) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-       
+
         if (Auth::guard('admin')->user()->role !== $role) {
-            
+
             return response()->json([
                 'status' => 'Forbidden',
                 'message' => 'You do not have permission to access this resource.',
@@ -52,7 +70,7 @@ class RoleMiddleware
                 ], 403);
         }
 
-        
+
 
         return $next($request);
     }

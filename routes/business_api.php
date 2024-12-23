@@ -13,14 +13,20 @@ Route::post('login', [BusinessAuthController::class, 'login']);
 // Protected routes
 
 Route::group([
-    'middleware' => 'auth:api',
+    'middleware' => ['auth:business', 'role:business'],
     'prefix' => 'auth',
 
 ], function () {
 
     Route::post('/refresh', [BusinessAuthController::class, 'refresh']);
     Route::post('logout', [BusinessAuthController::class, 'logout']);
+
+
     Route::get('profile', [BusinessAuthController::class, 'profile']);
+    Route::get('profile-edit', [BusinessAuthController::class, 'edit']);
+    Route::post('profile-update', [BusinessAuthController::class, 'update_profile']);
+
+
 
     Route::post('/password/request-otp', [BusinessAuthController::class, 'requestOtp']);
     Route::post('/password/verify-otp', [BusinessAuthController::class, 'verifyOtp']);
@@ -41,9 +47,21 @@ Route::group([
 
     // Route::post('/subscription/webhooks/stripe', [StripeWebhookController::class, 'handle']);
 
-    // business profile routes
 
+
+
+    // business profile routes
     Route::post('/business/profile-create', [BusinessProfileController::class, 'store']);
+    Route::get('/business/profile-details', [BusinessProfileController::class, 'business_profile_details']);
+    Route::post('/business/profile-update', [BusinessProfileController::class, 'update']);
+
+
+
+
+
+
+
+
 
     // event routes
     Route::post('/business/event-create', [EventController::class, 'store']);

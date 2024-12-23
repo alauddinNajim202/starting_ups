@@ -20,15 +20,28 @@ return [
             // 'hash' => false,
         ],
 
+
+        // __users quard
         'user' => [
             'driver' => 'jwt',
             'provider' => 'users',
         ],
 
+        // __business guard
+        'business' => [
+            'driver' => 'jwt',
+            'provider' => 'users',
+        ],
+
+        // __admin guard
         'admin' => [
             'driver' => 'jwt',
             'provider' => 'users',
         ]
+
+
+
+
     ],
 
     'providers' => [

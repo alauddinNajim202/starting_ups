@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Api\Business\Backend;
 
 use App\Helper\Helper;
-use App\Http\Controllers\Controller;
-use App\Models\BusinessProfile;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
+use App\Models\BusinessProfile;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+
 
 class BusinessProfileController extends Controller
 {
@@ -29,7 +31,7 @@ class BusinessProfileController extends Controller
     public function store(Request $request)
     {
         // Step 1: Validate the incoming request data
-        $validatedData = $request->validate([
+        $validatedData = Validator::make($request->all(), [
             'cover' => 'nullable|image|mimes:jpg,jpeg,png|max:4096',
             'business_name' => 'required|string',
             'category_id' => 'required|integer',
@@ -42,6 +44,10 @@ class BusinessProfileController extends Controller
             'street_address' => 'required|string',
             'city' => 'required|string',
         ]);
+
+        if ($validatedData->fails()) {
+            return response()->json(['message' => $validatedData->errors()->first()], 422);
+        }
 
         // Step 2: Create a new business profile record
         $businessProfile = BusinessProfile::create([

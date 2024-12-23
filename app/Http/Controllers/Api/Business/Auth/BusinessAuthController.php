@@ -93,7 +93,7 @@ class BusinessAuthController extends Controller
         }
     }
 
-    // user profile
+    // __user profile
     public function profile()
     {
         $user = auth('api')->user();
@@ -102,22 +102,108 @@ class BusinessAuthController extends Controller
         if (!$user) {
             return $this->error([], 'User not found.', 404);
         }
-
-
         // return user profile
         $user = [
             'full_name' => $user->full_name,
-            'user_name' => $user->user_name,
             'email' => $user->email,
-            'country' => $user->country,
+            'phone' => $user->phone,
+            // 'user_name' => $user->user_name,
+            'gender' => $user->gender,
+            'date_of_birth' => $user->date_of_birth,
+
+        ];
+
+        return $this->success($user, 'Profile retrieved successfully.');
+    }
+
+
+
+    // user profile edit
+    public function edit()
+    {
+        $user = auth('api')->user();
+
+
+        if (!$user) {
+            return $this->error([], 'User not found.', 404);
+        }
+
+        $user = [
+            'full_name' => $user->full_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'gender' => $user->gender,
+            'date_of_birth' => $user->date_of_birth,
+
+        ];
+
+        return $this->success($user, 'Profile retrieved successfully.');
+    }
+
+    //  __update user profile
+    public function update_profile(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'full_name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'date_of_birth' => 'required|string|max:255',
+            'gender' => 'required|string|max:255',
+            'phone' => 'required|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->error([], $validator->errors()->first(), 422);
+        }
+
+
+        $user = auth('api')->user();
+        $user->full_name = $request->full_name;
+        $user->email = $request->email;
+        $user->date_of_birth = $request->date_of_birth;
+        $user->gender = $request->gender;
+        $user->phone = $request->phone;
+        $user->save();
+
+        $user = [
+            'full_name' => $user->full_name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'gender' => $user->gender,
             'date_of_birth' => $user->date_of_birth,
 
         ];
 
 
 
-        return $this->success($user, 'Profile retrieved successfully.');
+
+        return $this->success($user, 'Profile updated successfully.');
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // send otp to email
     public function requestOtp(Request $request)

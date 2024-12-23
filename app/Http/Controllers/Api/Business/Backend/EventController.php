@@ -55,19 +55,19 @@ class EventController extends Controller
             $data['guest_list'] = json_decode($data['guest_list'], true);
         }
 
-        // Step 3: Handle file upload for the cover image, if provided
+
         if ($request->hasFile('cover')) {
             $coverPath = Helper::uploadImage($request->file('cover'), 'events');
             $data['cover'] = $coverPath;
 
         }
 
-        // Create the event
+
         $event = Event::create($data);
 
 
 
-        // Send invites to guest list
+
         if (isset($data['guest_list']) && is_array($data['guest_list'])) {
             foreach ($data['guest_list'] as $guestEmail) {
                 Mail::to($guestEmail)->send(new EventInviteMail($event, $guestEmail));

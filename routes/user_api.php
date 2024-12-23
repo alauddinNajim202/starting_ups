@@ -1,8 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\User\Auth\UserAuthController;
-
-
+use App\Http\Controllers\Api\User\Backend\UserStoryController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
@@ -12,7 +11,7 @@ Route::post('user-login', [UserAuthController::class, 'login']);
 // Protected routes
 
 Route::group([
-    'middleware' => 'auth:api',
+    'middleware' =>  ['auth:user', 'role:user'],
     'prefix' => 'auth',
 
 ], function () {
@@ -29,6 +28,21 @@ Route::group([
     Route::post('/user-password/request-otp', [UserAuthController::class, 'requestOtp']);
     Route::post('/user-password/verify-otp', [UserAuthController::class, 'verifyOtp']);
     Route::post('/user-password/reset', [UserAuthController::class, 'resetPassword']);
+
+
+
+
+    // user stories
+    Route::post('/user-story', [UserStoryController::class, 'store']);
+
+    Route::get('/user-story/{id}', [UserStoryController::class, 'show']);
+
+
+    // like story
+    Route::post('/user-story/{id}/like', [UserStoryController::class, 'story_like']);
+
+    // story comment
+    Route::post('/user-story/{id}/review', [UserStoryController::class, 'story_review']);
 
 
 

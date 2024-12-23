@@ -84,6 +84,7 @@
         <div class="header">
             <h1>You're Invited!</h1>
         </div>
+
         <div class="content">
             <h2>{{ $event->title }}</h2>
             <p>{{ $event->description }}</p>

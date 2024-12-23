@@ -13,25 +13,27 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->string('avatar')->nullable();
             $table->string('name')->nullable();
-
-
+            $table->string('user_name')->unique();
             $table->string('full_name')->nullable();
+            $table->string('email')->unique();
+            $table->string('password');
+
+
+            $table->string('gender')->nullable();
+            $table->string('phone')->nullable();
             $table->string('date_of_birth')->nullable();
+            $table->json('preferences')->nullable();
+            $table->string('location')->nullable();
+            $table->string('city')->nullable();
+            $table->string('street_address')->nullable();
             $table->string('country')->nullable();
 
             // role enum
             $table->enum('role', ['admin', 'user', 'business'])->default('user');
-            $table->string('user_name')->unique();
-            $table->string('email')->unique();
-            $table->string('gender')->nullable();
-            $table->json('preferences')->nullable();
-            $table->string('phone')->nullable();
-            $table->string('location')->nullable();
-            $table->string('city')->nullable();
-            $table->string('street_address')->nullable();
+
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
             $table->rememberToken();
             $table->timestamps();
         });

@@ -1,58 +1,79 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>Password Reset</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Reset OTP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333333;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e6e6e6;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #4CAF50;
+        }
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+        .content h2 {
+            font-size: 20px;
+            color: #555555;
+        }
+        .content p {
+            font-size: 16px;
+            margin-top: 10px;
+            color: #777777;
+        }
+        .otp {
+            display: inline-block;
+            margin: 20px 0;
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+            background-color: #f2f2f2;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #aaaaaa;
+            text-align: center;
+        }
+    </style>
 </head>
-
 <body>
-    <tr>
-        <td align="left" valign="center">
-    <div style="text-align:left; margin: 0 20px; padding: 40px; background-color:#ffffff; border-radius: 6px">
-
-        <!--begin:Email content-->
-        <div style="padding-bottom: 30px; font-size: 17px;">
-            <strong>Hello!</strong>
+    <div class="email-container">
+        <div class="header">
+            <h1>Password Reset</h1>
         </div>
-
-        <div style="padding-bottom: 30px">
-            You are receiving this email because we received a password reset request for your account. To
-            proceed
-            with the password reset please click on the button below:
+        <div class="content">
+            <h2>Your OTP for password reset is:</h2>
+            <div class="otp">{{ $otp }}</div>
+            <p>This OTP will expire in <strong>10 minutes</strong>. Please use it to reset your password promptly.</p>
         </div>
-
-        <div style="padding-bottom: 40px; text-align:center;">
-            <a href="{{ url('password/reset/' . $token) }}" rel="noopener"
-                target="_blank"
-                style="text-decoration:none;display:inline-block;text-align:center;padding:0.75575rem 1.3rem;font-size:0.925rem;line-height:1.5;border-radius:0.35rem;color:#ffffff;background-color:#00A3FF;border:0px;margin-right:0.75rem!important;font-weight:600!important;outline:none!important;vertical-align:middle">
-                Reset Password
-            </a>
-        </div>
-
-        <div style="padding-bottom: 30px">
-            This password reset link will expire in 60 minutes.
-            If you did not request a password reset, no further action is required.
-        </div>
-
-        <div style="border-bottom: 1px solid #eeeeee; margin: 15px 0"></div>
-
-        <div style="padding-bottom: 50px; word-wrap: break-all;">
-            <p style="margin-bottom: 10px;">
-                Button not working? Try pasting this URL into your browser:
-            </p>
-
-            {{-- <a href="{{ url('password/reset/' . $token) }}" rel="noopener" target="_blank" style="text-decoration:none;color: #00A3FF"> {{ url('password/reset/' . $token) }} </a> --}}
-        </div>
-        <!--end:Email content-->
-
-        <div style="padding-bottom: 10px">
-            Kind regards,<br>
-            The SOKO-ROAM Team.
+        <div class="footer">
+            <p>If you didn’t request a password reset, please ignore this email.</p>
         </div>
     </div>
-</td>
-
-    </tr>
 </body>
-
 </html>

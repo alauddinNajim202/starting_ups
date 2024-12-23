@@ -19,10 +19,7 @@ return new class extends Migration
             $table->integer('category_id');
             $table->integer('sub_category_id');
             $table->enum('activity', ['Indoor', 'Outdoor'])->default('Indoor');
-            $table->string('operation_days_start')->nullable();
-            $table->string('operation_days_end')->nullable();
-            $table->time('open_time')->default('00:00:00');
-            $table->time('close_time')->default('00:00:00');
+
             $table->string('street_address')->nullable();
             $table->string('city')->nullable();
             $table->timestamps();

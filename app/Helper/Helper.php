@@ -25,4 +25,23 @@ class Helper
     }
 
 
+
+    public static function deleteImage($imageUrl)
+    {
+
+        $baseUrl = url('/');
+        $relativePath = str_replace($baseUrl . '/', '', $imageUrl);
+
+        $fullPath = public_path($relativePath);
+
+        if (file_exists($fullPath) && is_file($fullPath)) {
+            if (unlink($fullPath)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
 }
