@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
-class AuthController extends Controller
+class BusinessAuthController extends Controller
 {
 
     // for json response
@@ -48,6 +48,7 @@ class AuthController extends Controller
 
             'email' => $request->email,
             'password' => bcrypt($request->password),
+            'role' => 'business',
         ]);
 
         // generate token

@@ -1,14 +1,14 @@
 <?php
 
-use App\Http\Controllers\Api\Business\Auth\AuthController;
+use App\Http\Controllers\Api\Business\Auth\BusinessAuthController;
 use App\Http\Controllers\Api\Business\Backend\BusinessProfileController;
 use App\Http\Controllers\Api\Business\Backend\EventController;
 use App\Http\Controllers\Api\Business\Backend\SubscriptionController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
-Route::post('register', [AuthController::class, 'register']);
-Route::post('login', [AuthController::class, 'login']);
+Route::post('register', [BusinessAuthController::class, 'register']);
+Route::post('login', [BusinessAuthController::class, 'login']);
 
 // Protected routes
 
@@ -18,13 +18,13 @@ Route::group([
 
 ], function () {
 
-    Route::post('/refresh', [AuthController::class, 'refresh']);
-    Route::post('logout', [AuthController::class, 'logout']);
-    Route::get('profile', [AuthController::class, 'profile']);
+    Route::post('/refresh', [BusinessAuthController::class, 'refresh']);
+    Route::post('logout', [BusinessAuthController::class, 'logout']);
+    Route::get('profile', [BusinessAuthController::class, 'profile']);
 
-    Route::post('/password/request-otp', [AuthController::class, 'requestOtp']);
-    Route::post('/password/verify-otp', [AuthController::class, 'verifyOtp']);
-    Route::post('/password/reset', [AuthController::class, 'resetPassword']);
+    Route::post('/password/request-otp', [BusinessAuthController::class, 'requestOtp']);
+    Route::post('/password/verify-otp', [BusinessAuthController::class, 'verifyOtp']);
+    Route::post('/password/reset', [BusinessAuthController::class, 'resetPassword']);
 
     // subscription routes
 
