@@ -9,4 +9,9 @@ class Faq extends Model
 {
     use HasFactory;
     protected $guarded = [];
+
+
+
+    // hidden
+    protected $hidden = ['created_at', 'updated_at', 'deleted_at'];
 }

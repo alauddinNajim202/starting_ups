@@ -5,12 +5,17 @@ namespace App\Http\Controllers\Backend;
 use App\Helper\Helper;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
 
 class CategoryController extends Controller
 {
+
+
+
+
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -53,6 +58,7 @@ class CategoryController extends Controller
 
         return view('backend.layouts.category.index');
     }
+
 
     public function create()
     {

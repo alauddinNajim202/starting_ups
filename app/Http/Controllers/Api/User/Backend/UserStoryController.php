@@ -24,7 +24,7 @@ class UserStoryController extends Controller
         // dd($request->all());
         // Step 1: Validate the incoming request data
         $validatedData = Validator::make($request->all(), [
-            'cover' => 'nullable|image|mimes:jpg,jpeg,png|max:4096',
+            'cover' => 'required|image|mimes:jpg,jpeg,png|max:4096',
             'title' => 'required|string',
             'description' => 'required|string',
             'location' => 'required|string',
@@ -32,12 +32,13 @@ class UserStoryController extends Controller
         ]);
 
 
+
         if ($validatedData->fails()) {
             return $this->error([], $validatedData->errors()->first(), 422);
         }
 
         if ($request->hasFile('cover')) {
-            $coverPath = Helper::uploadImage($request->file('cover'), 'stories');
+            $coverPath = $request->file('cover') ? Helper::uploadImage($request->file('cover'), 'stories') : null;
 
         }
 
@@ -46,11 +47,11 @@ class UserStoryController extends Controller
             'title' => $request->title,
             'description' => $request->description,
             'location' => $request->location,
-            'cover' => $coverPath,
+            'cover' => $coverPath ?? null,
 
         ]);
 
-        $story->cover = url($story->cover);
+        $story->cover = $story->cover ? url($story->cover) : null;
 
         return $this->success($story, 'Story created successfully', 200);
 

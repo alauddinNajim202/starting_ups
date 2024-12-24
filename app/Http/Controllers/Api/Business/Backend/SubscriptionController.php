@@ -20,7 +20,7 @@ class SubscriptionController extends Controller
         try {
             $plans = Plan::get();
 
-            if (!$plans) {
+            if (!$plans->isEmpty()) {
                 return $this->error([], 'Subscription plan not found', 404);
             }
 
