@@ -19,4 +19,16 @@ class Event extends Model
         'guest_list' => 'array',
         'guest_options' => 'array',
     ];
+
+    // event prices
+    public function event_prices()
+    {
+        return $this->hasMany(EventPrice::class);
+    }
+
+    // user
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

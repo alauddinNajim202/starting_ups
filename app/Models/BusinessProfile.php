@@ -31,4 +31,9 @@ class BusinessProfile extends Model
     {
         return $this->hasMany(BusinessHour::class);
     }
+
+    public function business_prices()
+    {
+        return $this->hasMany(BusinessPrice::class);
+    }
 }

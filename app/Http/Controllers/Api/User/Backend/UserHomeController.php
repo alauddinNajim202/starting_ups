@@ -36,6 +36,57 @@ class UserHomeController extends Controller
         }
     }
 
+    // _categories event details
+    public function categories_event($id)
+    {
+        try {
+
+            $category = Category::find($id);
+
+            if (!$category) {
+                return $this->error([], 'Category not found', 404);
+            }
+
+            $events = Event::where('category_id', $category->id)->get();
+
+            if ($events->isEmpty()) {
+                return $this->error([], 'No events found for this category', 404);
+            }
+
+            $events = $events->map(function ($event) {
+                return [
+                    'id' => $event->id,
+                    'title' => $event->title,
+                    'time' => Carbon::parse($event->date)->format('h:i A'),
+                    'date' => Carbon::parse($event->date)->format('d M Y'),
+                    'location' => $event->location_address,
+                    'cover' => $event->cover ? url($event->cover) : null,
+                ];
+            });
+
+            return $this->success($events, 'Events retrieved successfully', 200);
+
+        } catch (\Exception $e) {
+
+            return $this->error([], 'Error retrieving events: ' . $e->getMessage(), 500);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // _events
     public function events()
     {
@@ -79,6 +130,7 @@ class UserHomeController extends Controller
                 'date' => Carbon::parse($event->date)->format('d M Y'),
                 'location' => $event->location_address,
                 'cover' => $event->cover ? url($event->cover) : null,
+
             ];
         });
 
@@ -91,5 +143,46 @@ class UserHomeController extends Controller
         //     ->get();
 
     }
+
+
+    // _event details
+    public function event_details($id)
+    {
+        $event = Event::with('event_prices')->find($id);
+
+        if (!$event) {
+            return $this->error([], 'Event not found', 404);
+        }
+
+        $event = [
+
+            'user_id' => $event->user_id,
+            'user_name' => $event->user->name,
+            'user_image' => $event->user->image ? url($event->user->image) : null,
+
+
+            'id' => $event->id,
+            'title' => $event->title,
+            'time' => Carbon::parse($event->date)->format('h:i A'),
+            'date' => Carbon::parse($event->date)->format('d M Y'),
+            'location' => $event->location_address,
+            'cover' => $event->cover ? url($event->cover) : null,
+            'description' => $event->description,
+            'location_type' => $event->location_type,
+            'location_address' => $event->location_address,
+            'amount' => $event->amount,
+            'offerings' => $event->offerings,
+            'guest_list' => $event->guest_list,
+            'event_prices' => $event->event_prices,
+
+        ];
+
+
+
+        return $this->success($event, 'Event details retrieved successfully', 200);
+    }
+
+
+
 
 }

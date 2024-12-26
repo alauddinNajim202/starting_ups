@@ -23,6 +23,8 @@ class BusinessProfileController extends Controller
     public function store(Request $request)
     {
 
+        // dd($request->all());
+
         $validatedData = $request->validate([
             'cover' => 'nullable|image|mimes:jpg,jpeg,png|max:4096',
             'business_name' => 'required|string',
@@ -36,6 +38,14 @@ class BusinessProfileController extends Controller
             'hours.*.is_closed' => 'required|boolean',
             'hours.*.open_time' => 'nullable|string',
             'hours.*.close_time' => 'nullable|string',
+
+
+
+            'prices' => 'required|array',
+            'prices.*.type' => 'required|string',
+            'prices.*.amount' => 'required',
+            'prices.*.offerings' => 'nullable|string',
+
         ]);
 
         $businessProfile = BusinessProfile::updateOrCreate(
@@ -66,10 +76,26 @@ class BusinessProfileController extends Controller
             ]);
         }
 
+
+        $businessProfile->business_prices()->delete(); // __clear existing hours
+        foreach ($validatedData['prices'] as $price) {
+            $businessProfile->business_prices()->create([
+                'type' => $price['type'],
+                'amount' => $price['amount'],
+                'offerings' => $price['offerings'],
+
+            ]);
+        }
+
+
+
+
         $businessProfile->cover = url($businessProfile->cover);
 
         // load business hours
-        $businessProfile->load('business_hours');
+        $businessProfile->load('business_hours','business_prices');
+
+
 
         return $this->success($businessProfile, 'Business Profile created successfully', 200);
 
