@@ -15,8 +15,10 @@ return new class extends Migration
 
                 $table->id();
                 $table->foreignId('business_profile_id')->constrained()->onDelete('cascade');
-                $table->string('day'); // Sunday, Monday, etc.
+                $table->string('day')->nullable(); // Sunday, Monday, etc.
+                $table->string('date')->nullable(); // Sunday, Monday, etc.
                 $table->boolean('is_closed')->default(false);
+
                 $table->time('open_time')->nullable(); // Null if closed
                 $table->time('close_time')->nullable(); // Null if closed
                 $table->timestamps();

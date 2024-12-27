@@ -46,10 +46,15 @@ Route::group([
 
     // __user home routes
     Route::get('/categories', [UserHomeController::class, 'categories']);
-    Route::get('/categories/{id}/event-details', [UserHomeController::class, 'categories_event']);
+    Route::get('/categories/{id}/explore-events', [UserHomeController::class, 'explore_event']);
+    Route::get('/categories/{id}/tailored-events', [UserHomeController::class, 'tailored_event']);
+    Route::get('/categories/{id}/random-events', [UserHomeController::class, 'random_event']);
 
 
 
+
+
+    // __upcoming events routes
     Route::get('event/upcoming-events', [UserHomeController::class, 'events']);
     Route::get('event/upcoming-event-details/{id}', [UserHomeController::class, 'event_details']);
 

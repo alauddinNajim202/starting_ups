@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\User\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\BusinessHour;
+use App\Models\BusinessProfile;
 use App\Models\Category;
 use App\Models\Event;
 use App\Traits\ApiResponse;
@@ -37,8 +39,10 @@ class UserHomeController extends Controller
     }
 
     // _categories event details
-    public function categories_event($id)
+    public function explore_event($id)
     {
+
+        // dd(Carbon::now()->format('d/m/Y'));
         try {
 
             $category = Category::find($id);
@@ -47,24 +51,92 @@ class UserHomeController extends Controller
                 return $this->error([], 'Category not found', 404);
             }
 
-            $events = Event::where('category_id', $category->id)->get();
+            $user = auth()->user();
 
-            if ($events->isEmpty()) {
-                return $this->error([], 'No events found for this category', 404);
+            $business_events = BusinessProfile::where('category_id', $category->id)
+                ->where(function ($query) use ($user) {
+                    $query->where('location', 'like', '%' . $user->city . '%')
+                        ->orWhere('location', 'like', '%' . $user->street_address . '%');
+                })
+                ->get();
+
+            $near_events = collect();
+
+            foreach ($business_events as $event) {
+                $event_hours = BusinessHour::where('business_profile_id', $event->id)->get();
+                $near_events = $near_events->merge($event_hours);
             }
 
-            $events = $events->map(function ($event) {
+            $near_events = $near_events->map(function ($event) {
                 return [
                     'id' => $event->id,
-                    'title' => $event->title,
-                    'time' => Carbon::parse($event->date)->format('h:i A'),
-                    'date' => Carbon::parse($event->date)->format('d M Y'),
-                    'location' => $event->location_address,
-                    'cover' => $event->cover ? url($event->cover) : null,
+                    'title' => $event->business_profile->business_name,
+                    'time' => $event->open_time,
+                    'date' => $event->date,
+                    'location' => $event->business_profile->location,
+                    'cover' => $event->business_profile->cover ? url($event->business_profile->cover) : null,
                 ];
             });
 
-            return $this->success($events, 'Events retrieved successfully', 200);
+            if ($near_events->isEmpty()) {
+                return $this->error([], 'No events found near you', 404);
+            }
+
+            // return $near_events;
+
+            // recommated events
+
+            $business_events = BusinessProfile::where('category_id', $category->id)->get();
+
+            $recommated_events = collect();
+
+            foreach ($business_events as $event) {
+                $event_hours = BusinessHour::where('business_profile_id', $event->id)
+                    ->where('date', '>', Carbon::now()->format('d/m/Y'))
+                    ->get();
+                // dd($event_hours);
+                $recommated_events = $recommated_events->merge($event_hours);
+
+            }
+
+            $recommated_events = $recommated_events->map(function ($event) {
+                return [
+                    'id' => $event->id,
+                    'title' => $event->business_profile->business_name,
+                    'time' => $event->open_time,
+                    'date' => $event->date,
+                    'location' => $event->business_profile->location,
+                    'cover' => $event->business_profile->cover ? url($event->business_profile->cover) : null,
+                ];
+            });
+
+            // daily events
+
+            $daily_events = collect();
+
+            foreach ($business_events as $event) {
+                $event_hours = BusinessHour::where('business_profile_id', $event->id)
+                    ->where('date','>', Carbon::now()->format('d/m/Y'))
+                    ->get();
+                $daily_events = $daily_events->merge($event_hours);
+            }
+
+            $daily_events = $daily_events->map(function ($event) {
+                return [
+                    'id' => $event->id,
+                    'title' => $event->business_profile->business_name,
+                    'time' => $event->open_time,
+                    'date' => $event->date,
+                    'location' => $event->business_profile->location,
+                    'cover' => $event->business_profile->cover ? url($event->business_profile->cover) : null,
+                ];
+            });
+
+            return $this->success([
+                'near_events' => $near_events,
+                'recommated_events' => $recommated_events,
+                'daily_events' => $daily_events,
+            ], 'Events retrieved successfully', 200);
 
         } catch (\Exception $e) {
 
@@ -72,20 +144,87 @@ class UserHomeController extends Controller
         }
     }
 
+    // __tailored events
+    public function tailored_event($id)
+    {
+        try {
+
+            $category = Category::find($id);
+
+            // $user = auth()->user();
+
+            $business_events = BusinessProfile::where('category_id', $category->id)->get();
+
+            $tailored_event = collect();
+
+            foreach ($business_events as $event) {
+                $event_hours = BusinessHour::where('business_profile_id', $event->id)->get();
+                $tailored_event = $tailored_event->merge($event_hours);
+            }
+
+            $tailored_event = $tailored_event->map(function ($event) {
+                return [
+                    'id' => $event->id,
+                    'title' => $event->business_profile->business_name,
+                    'time' => $event->open_time,
+                    'date' => $event->date,
+                    'location' => $event->business_profile->location,
+                    'cover' => $event->business_profile->cover ? url($event->business_profile->cover) : null,
+                ];
+            });
+
+            return $this->success($tailored_event, 'Tailored Events retrieved successfully', 200);
+
+        } catch (\Exception $e) {
+
+            return $this->error([], 'Error retrieving events: ' . $e->getMessage(), 500);
+        }
+    }
+
+    // __random events
+    public function random_event($id)
+    {
+
+        try {
+
+            $category = Category::find($id);
+
+            if (!$category) {
+                return $this->error([], 'Category not found', 404);
+            }
+
+            // random events
+            $business_events = BusinessProfile::where('category_id', $category->id)->get();
+
+            $random_event = collect();
+
+            foreach ($business_events as $event) {
+                $event_hours = BusinessHour::where('business_profile_id', $event->id)
+                ->orderBy('day', 'asc')
+                ->get();
+                $random_event = $random_event->merge($event_hours);
+            }
+
+            $random_event = $random_event->map(function ($event) {
+                return [
+                    'id' => $event->id,
+                    'title' => $event->business_profile->business_name,
+                    'time' => $event->open_time,
+                    'date' => $event->date,
+                    'location' => $event->business_profile->location,
+                    'cover' => $event->business_profile->cover ? url($event->business_profile->cover) : null,
+                ];
+            });
 
 
 
+            return $this->success($random_event, 'Random Events retrieved successfully', 200);
 
+        } catch (\Exception $e) {
 
-
-
-
-
-
-
-
-
-
+            return $this->error([], 'Error retrieving events: ' . $e->getMessage(), 500);
+        }
+    }
 
     // _events
     public function events()
@@ -144,7 +283,6 @@ class UserHomeController extends Controller
 
     }
 
-
     // _event details
     public function event_details($id)
     {
@@ -159,7 +297,6 @@ class UserHomeController extends Controller
             'user_id' => $event->user_id,
             'user_name' => $event->user->name,
             'user_image' => $event->user->image ? url($event->user->image) : null,
-
 
             'id' => $event->id,
             'title' => $event->title,
@@ -177,12 +314,7 @@ class UserHomeController extends Controller
 
         ];
 
-
-
         return $this->success($event, 'Event details retrieved successfully', 200);
     }
-
-
-
 
 }

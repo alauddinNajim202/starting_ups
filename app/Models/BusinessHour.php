@@ -12,6 +12,7 @@ class BusinessHour extends Model
     protected $fillable = [
         'business_profile_id',
         'day',
+        'date',
         'is_closed',
         'open_time',
         'close_time',
