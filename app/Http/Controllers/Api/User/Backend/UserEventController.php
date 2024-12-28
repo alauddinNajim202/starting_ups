@@ -32,6 +32,10 @@ class UserEventController extends Controller
 
         $event = Event::findOrFail($id);
 
+        if (!$event) {
+            return $this->error([], 'Event not found', 404);
+        }
+
         if ($request->hasFile('cover')) {
             $coverPath = $request->hasFile('cover')
             ? Helper::uploadImage($request->file('cover'), 'business_profiles')

@@ -245,7 +245,7 @@ class UserAuthController extends Controller
 
 
     // __update user preferences
-    public function updatePreferences(Request $request)
+    public function update_preferences(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'preferences.*' => 'required|string|max:255',
