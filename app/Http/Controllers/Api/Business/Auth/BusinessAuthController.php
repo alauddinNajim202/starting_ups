@@ -143,9 +143,11 @@ class BusinessAuthController extends Controller
     //  __update user profile
     public function update_profile(Request $request)
     {
+
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'full_name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
+           'email' => 'required|email|unique:users,email|max:255',
             'date_of_birth' => 'required|string|max:255',
             'gender' => 'required|string|max:255',
             'phone' => 'required|string|max:255',
@@ -178,31 +180,6 @@ class BusinessAuthController extends Controller
 
         return $this->success($user, 'Profile updated successfully.');
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     // send otp to email

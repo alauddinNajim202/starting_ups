@@ -116,7 +116,7 @@ class UserHomeController extends Controller
 
             foreach ($business_events as $event) {
                 $event_hours = BusinessHour::where('business_profile_id', $event->id)
-                    ->where('date','>', Carbon::now()->format('d/m/Y'))
+                    ->where('date', '>', Carbon::now()->format('d/m/Y'))
                     ->get();
                 $daily_events = $daily_events->merge($event_hours);
             }
@@ -200,8 +200,8 @@ class UserHomeController extends Controller
 
             foreach ($business_events as $event) {
                 $event_hours = BusinessHour::where('business_profile_id', $event->id)
-                ->orderBy('day', 'asc')
-                ->get();
+                    ->orderBy('day', 'asc')
+                    ->get();
                 $random_event = $random_event->merge($event_hours);
             }
 
@@ -215,8 +215,6 @@ class UserHomeController extends Controller
                     'cover' => $event->business_profile->cover ? url($event->business_profile->cover) : null,
                 ];
             });
-
-
 
             return $this->success($random_event, 'Random Events retrieved successfully', 200);
 

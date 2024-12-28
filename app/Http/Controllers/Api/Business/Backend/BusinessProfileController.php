@@ -129,7 +129,7 @@ class BusinessProfileController extends Controller
         //
     }
 
-    public function update(Request $request)
+    public function business_profile_update(Request $request)
     {
 
         $businessProfile = BusinessProfile::where('user_id', Auth::id())->first();

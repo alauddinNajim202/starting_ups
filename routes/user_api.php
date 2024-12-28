@@ -7,69 +7,43 @@ use App\Http\Controllers\Api\User\Backend\UserHomeController;
 use App\Http\Controllers\Api\User\Backend\UserStoryController;
 use Illuminate\Support\Facades\Route;
 
-// Public routes
-Route::post('user-register', [UserAuthController::class, 'register']);
-Route::post('user-login', [UserAuthController::class, 'login']);
+// Public User API Routes
+Route::prefix('user')->group(function () {
+    Route::post('register', [UserAuthController::class, 'register']);
+    Route::post('login', [UserAuthController::class, 'login']);
+});
 
-// Protected routes
-
-Route::group([
-    'middleware' => ['auth:user', 'role:user'],
-    'prefix' => 'auth',
-
-], function () {
-
-    Route::post('/refresh', [UserAuthController::class, 'refresh']);
+// Protected User API Routes
+Route::middleware(['auth:user', 'role:user'])->prefix('auth-user')->group(function () {
+    // Authentication & Profile
+    Route::post('refresh', [UserAuthController::class, 'refresh']);
     Route::post('logout', [UserAuthController::class, 'logout']);
-    Route::get('user-profile', [UserAuthController::class, 'profile']);
+    Route::get('profile', [UserAuthController::class, 'profile']);
 
-    Route::post('/user-password/request-otp', [UserAuthController::class, 'requestOtp']);
-    Route::post('/user-password/verify-otp', [UserAuthController::class, 'verifyOtp']);
-    Route::post('/user-password/reset', [UserAuthController::class, 'resetPassword']);
+    // Password Management
+    Route::post('password/request-otp', [UserAuthController::class, 'requestOtp']);
+    Route::post('password/verify-otp', [UserAuthController::class, 'verifyOtp']);
+    Route::post('password/reset', [UserAuthController::class, 'resetPassword']);
 
-    // user stories
-    Route::post('/user-story', [UserStoryController::class, 'store']);
+    // Stories
+    Route::post('story', [UserStoryController::class, 'store']);
+    Route::get('story/{id}', [UserStoryController::class, 'show']);
+    Route::post('story/{id}/like', [UserStoryController::class, 'story_like']);
+    Route::post('story/{id}/review', [UserStoryController::class, 'story_review']);
 
-    Route::get('/user-story/{id}', [UserStoryController::class, 'show']);
+    // Events
+    Route::post('event/{id}/review', [UserEventController::class, 'event_review']);
+    Route::get('event/upcoming', [UserHomeController::class, 'events']);
+    Route::get('event/details/{id}', [UserHomeController::class, 'event_details']);
 
-    //  like story
-    Route::post('/user-story/{id}/like', [UserStoryController::class, 'story_like']);
+    // Categories
+    Route::get('categories', [UserHomeController::class, 'categories']);
+    Route::get('categories/{id}/explore-events', [UserHomeController::class, 'explore_event']);
 
-    // __user story comment
-    Route::post('/user-story/{id}/review', [UserStoryController::class, 'story_review']);
-
-    // __user event reviews
-    Route::post('/event/{id}/review', [UserEventController::class, 'event_review']);
-
-
-
-
-    // __user home routes
-    Route::get('/categories', [UserHomeController::class, 'categories']);
-    Route::get('/categories/{id}/explore-events', [UserHomeController::class, 'explore_event']);
-    Route::get('/categories/{id}/tailored-events', [UserHomeController::class, 'tailored_event']);
-    Route::get('/categories/{id}/random-events', [UserHomeController::class, 'random_event']);
-
-
-
-
-
-    // __upcoming events routes
-    Route::get('event/upcoming-events', [UserHomeController::class, 'events']);
-    Route::get('event/upcoming-event-details/{id}', [UserHomeController::class, 'event_details']);
-
-
-
-
-
-    // __user account routes
-    Route::get('/user/profile-edit', [UserAccountController::class, 'edit']);
-    Route::post('/user/profile-update', [UserAccountController::class, 'update_profile']);
-    // get user preferences
-    Route::get('user-preferences', [UserAuthController::class, 'preferences']);
-    // update user preferences
-    Route::post('user-preferences', [UserAuthController::class, 'updatePreferences']);
-    // __user faq
-    Route::get('/faq', [UserAccountController::class, 'user_faq']);
-
+    // Account Management
+    Route::get('account/edit', [UserAccountController::class, 'edit']);
+    Route::post('account/update', [UserAccountController::class, 'update_profile']);
+    Route::get('preferences', [UserAuthController::class, 'preferences']);
+    Route::post('preferences', [UserAuthController::class, 'updatePreferences']);
+    Route::get('faq', [UserAccountController::class, 'user_faq']);
 });

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->id(); // Primary Key
-            $table->string('cover'); // Event Title
+            $table->string('cover')->nullable(); // Event Title
             $table->string('title'); // Event Title
             $table->integer('category_id'); // Category
             $table->integer('user_id'); // Category

@@ -17,10 +17,12 @@ class SubscriptionController extends Controller
     // __subscription plans
     public function index()
     {
-        try {
-            $plans = Plan::get();
 
-            if (!$plans->isEmpty()) {
+        try {
+            $plans = Plan::all();
+
+
+            if ($plans->isEmpty()) {
                 return $this->error([], 'Subscription plan not found', 404);
             }
 
