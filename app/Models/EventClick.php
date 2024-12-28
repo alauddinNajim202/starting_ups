@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class EventClick extends Model
 {
     use HasFactory;
+
+    protected $table = 'event_clicks';
+
+    protected $fillable = [
+        'user_id',
+        'event_id',
+        'last_click',
+    ];
 }

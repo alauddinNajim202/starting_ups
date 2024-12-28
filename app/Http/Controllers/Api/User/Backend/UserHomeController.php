@@ -7,6 +7,7 @@ use App\Models\BusinessHour;
 use App\Models\BusinessProfile;
 use App\Models\Category;
 use App\Models\Event;
+use App\Models\EventClick;
 use App\Traits\ApiResponse;
 use Carbon\Carbon;
 
@@ -288,6 +289,23 @@ class UserHomeController extends Controller
 
         if (!$event) {
             return $this->error([], 'Event not found', 404);
+        }
+
+        $userId = auth()->id();
+
+        $hasViewed = EventClick::where('user_id', $userId)
+            ->where('event_id', $id)
+            ->exists();
+
+        if (!$hasViewed) {
+            $event->increment('view_count');
+
+            // click events
+            EventClick::create([
+                'user_id' => auth()->user()->id,
+                'event_id' => $event->id,
+                'last_click' => Carbon::now(),
+            ]);
         }
 
         $event = [

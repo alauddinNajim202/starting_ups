@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\User\Auth\UserAuthController;
+use App\Http\Controllers\Api\User\Backend\EventBookingController;
 use App\Http\Controllers\Api\User\Backend\UserAccountController;
 use App\Http\Controllers\Api\User\Backend\UserEventController;
 use App\Http\Controllers\Api\User\Backend\UserHomeController;
@@ -36,7 +37,14 @@ Route::middleware(['auth:user', 'role:user'])->prefix('auth-user')->group(functi
     Route::get('event/details/{id}', [UserHomeController::class, 'event_details']);
 
 
+    // event booking
+    Route::post('event/{id}/booking', [EventBookingController::class, 'event_book']);
 
+    // event order summary
+    Route::get('event-booking/{id}/order-summary', [EventBookingController::class, 'order_summary']);
+
+
+    // event review
     Route::post('event/{id}/review', [UserEventController::class, 'event_review']);
 
     // Categories
