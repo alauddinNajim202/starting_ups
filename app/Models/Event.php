@@ -44,4 +44,11 @@ class Event extends Model
     {
         return $this->hasMany(EventClick::class);
     }
+
+
+    // event reviews
+    public function event_reviews()
+    {
+        return $this->hasMany(EventReview::class);
+    }
 }
