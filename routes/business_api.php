@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Business\Auth\BusinessAuthController;
 use App\Http\Controllers\Api\Business\Backend\BusinessProfileController;
 use App\Http\Controllers\Api\Business\Backend\EventController;
+use App\Http\Controllers\Api\Business\Backend\EventReportController;
 use App\Http\Controllers\Api\Business\Backend\SubscriptionController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,4 +37,10 @@ Route::middleware(['auth:business', 'role:business'])->prefix('auth-business')->
     // Events
     Route::post('event/create', [EventController::class, 'store']);
     // Route::post('event/send-invite', [EventController::class, 'send_invite']);
+
+
+
+
+    // events reports
+    Route::get('event-reports', [EventReportController::class, 'event_details']);
 });

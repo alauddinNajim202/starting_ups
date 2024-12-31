@@ -17,6 +17,8 @@ use App\Http\Controllers\Backend\SubCategoryController;
 use App\Http\Controllers\Backend\ThemesController;
 use Illuminate\Support\Facades\Route;
 
+
+
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
 //! Route for ProfileController
