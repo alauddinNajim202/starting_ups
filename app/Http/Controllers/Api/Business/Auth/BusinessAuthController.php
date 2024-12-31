@@ -84,6 +84,7 @@ class BusinessAuthController extends Controller
                 'user_name' => $user->user_name,
                 'email' => $user->email,
                 'token' => $token,
+                // 'is_location' => $user->street_address ? true : false
             ];
 
             return $this->success($response, 'Login successful.');

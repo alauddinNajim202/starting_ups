@@ -21,6 +21,9 @@ Route::middleware(['auth:user', 'role:user'])->prefix('auth-user')->group(functi
     Route::post('logout', [UserAuthController::class, 'logout']);
     Route::get('profile', [UserAuthController::class, 'profile']);
 
+    // location update
+    Route::post('location/update', [UserAuthController::class, 'user_location']);
+
     // Password Management
     Route::post('password/request-otp', [UserAuthController::class, 'requestOtp']);
     Route::post('password/verify-otp', [UserAuthController::class, 'verifyOtp']);

@@ -30,8 +30,8 @@ class UserAuthController extends Controller
 
             'full_name' => 'required|string|max:255',
             'date_of_birth' => 'required|string|max:255',
-            'street_address' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
+            // 'street_address' => 'required|string|max:255',
+            // 'city' => 'required|string|max:255',
 
             'user_name' => 'required|unique:users,user_name|max:255',
             'email' => 'required|email|unique:users,email|max:255',
@@ -57,8 +57,8 @@ class UserAuthController extends Controller
             'preferences' => json_encode($request->preferences),
             'date_of_birth' => $request->date_of_birth,
             'country' => $request->country,
-            'street_address' => $request->street_address,
-            'city' => $request->city,
+            // 'street_address' => $request->street_address,
+            // 'city' => $request->city,
         ]);
 
         // generate token
@@ -71,6 +71,21 @@ class UserAuthController extends Controller
         return $this->success($data, ' Sign Up Successfull.', 201);
 
     }
+
+    // user_location update
+
+    public function user_location(Request $request)
+    {
+        $user = auth('api')->user();
+        $user->street_address = $request->street_address;
+        $user->city = $request->city;
+        $user->save();
+        return $this->success($user, 'Location updated successfully.');
+    }
+
+
+
+
 
     public function login(Request $request)
     {
@@ -96,6 +111,8 @@ class UserAuthController extends Controller
                 'user_name' => $user->user_name,
                 'email' => $user->email,
                 'token' => $token,
+                'is_location' => $user->street_address ? true : false
+
             ];
 
             return $this->success($response, 'Login successful.');
