@@ -35,17 +35,19 @@ class BusinessProfileController extends Controller
             'location' => 'required|string',
             'hours' => 'required|array',
             'hours.*.day' => 'required|string',
-            'hours.*.date' => 'required',
+            // 'hours.*.date' => 'required',
             'hours.*.is_closed' => 'required|boolean',
             'hours.*.open_time' => 'nullable|string',
             'hours.*.close_time' => 'nullable|string',
-
-
 
             'prices' => 'required|array',
             'prices.*.type' => 'required|string',
             'prices.*.amount' => 'required',
             'prices.*.offerings' => 'nullable|string',
+
+            // age limit
+            'age_min' => 'nullable',
+            'age_max' => 'nullable',
 
         ]);
 
@@ -57,6 +59,8 @@ class BusinessProfileController extends Controller
                 'sub_category_id' => $validatedData['sub_category_id'],
                 'activity' => $validatedData['activity'],
                 'location' => $validatedData['location'],
+                'age_min' => $validatedData['age_min'],
+                'age_max' => $validatedData['age_max'],
 
             ]
         );
@@ -71,13 +75,12 @@ class BusinessProfileController extends Controller
         foreach ($validatedData['hours'] as $hour) {
             $businessProfile->business_hours()->create([
                 'day' => $hour['day'],
-                'date' => $hour['date'],
+                // 'date' => $hour['date'],
                 'is_closed' => $hour['is_closed'],
                 'open_time' => $hour['is_closed'] ? null : $hour['open_time'],
                 'close_time' => $hour['is_closed'] ? null : $hour['close_time'],
             ]);
         }
-
 
         $businessProfile->business_prices()->delete(); // __clear existing hours
         foreach ($validatedData['prices'] as $price) {
@@ -89,15 +92,24 @@ class BusinessProfileController extends Controller
             ]);
         }
 
+        // age limit
+
+        // $businessProfile->age_limit()->delete(); // __clear existing hours
+        // if ($validatedData['age_limit']) {
+        //     $businessProfile->age_limit()->create([
+        //         'business_profile_id' => $businessProfile->id,
+        //         'minimum' => $validatedData['age_limit']['minimum'],
+        //         'maximum' => $validatedData['age_limit']['maximum'],
+        //     ]);
+        // }
 
 
 
-        $businessProfile->cover = url($businessProfile->cover);
+
+        $businessProfile->cover = $businessProfile->cover ? url($businessProfile->cover) : null;
 
         // load business hours
-        $businessProfile->load('business_hours','business_prices');
-
-
+        $businessProfile->load('business_hours', 'business_prices');
 
         return $this->success($businessProfile, 'Business Profile created successfully', 200);
 
@@ -111,7 +123,7 @@ class BusinessProfileController extends Controller
             return $this->error([], 'Business Profile not found', 404);
         }
 
-        $businessProfile->cover = $businessProfile->cover ?  url($businessProfile->cover) : null;
+        $businessProfile->cover = $businessProfile->cover ? url($businessProfile->cover) : null;
 
         // load business hours
         $businessProfile->load('business_hours');
@@ -134,14 +146,12 @@ class BusinessProfileController extends Controller
 
         $businessProfile = BusinessProfile::where('user_id', Auth::id())->first();
 
-
         if (!$businessProfile || $businessProfile->user_id !== Auth::id()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Business profile not found or unauthorized access.',
             ], 404);
         }
-
 
         $validatedData = $request->validate([
             'cover' => 'nullable|image|mimes:jpg,jpeg,png|max:4096',
@@ -158,7 +168,6 @@ class BusinessProfileController extends Controller
             'hours.*.close_time' => 'nullable|string',
         ]);
 
-
         $businessProfile->update([
             'business_name' => $validatedData['business_name'],
             'category_id' => $validatedData['category_id'],
@@ -166,9 +175,7 @@ class BusinessProfileController extends Controller
             'activity' => $validatedData['activity'],
             'location' => $validatedData['location'],
 
-
         ]);
-
 
         if ($request->hasFile('cover')) {
 
@@ -182,7 +189,6 @@ class BusinessProfileController extends Controller
             $businessProfile->save();
         }
 
-
         $businessProfile->business_hours()->delete();
         foreach ($validatedData['hours'] as $hour) {
             $businessProfile->business_hours()->create([
@@ -193,9 +199,7 @@ class BusinessProfileController extends Controller
             ]);
         }
 
-
         $businessProfile->cover = $businessProfile->cover ? url($businessProfile->cover) : null;
-
 
         return $this->success(
             $businessProfile->load('business_hours'),

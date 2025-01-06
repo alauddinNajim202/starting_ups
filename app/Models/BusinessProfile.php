@@ -36,4 +36,10 @@ class BusinessProfile extends Model
     {
         return $this->hasMany(BusinessPrice::class);
     }
+
+    // age limit
+    public function age_limit()
+    {
+        return $this->hasMany(BusinessAgeLimit::class,);
+    }
 }
