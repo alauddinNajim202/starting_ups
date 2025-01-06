@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Business\Auth;
 
+use App\Helper\Helper;
 use App\Http\Controllers\Controller;
 use App\Mail\OtpMailNotification;
 use App\Models\User;
@@ -24,6 +25,8 @@ class BusinessAuthController extends Controller
 
     public function register(Request $request)
     {
+
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'full_name' => 'required|string|max:255',
             'date_of_birth' => 'required|string|max:255',
@@ -40,6 +43,10 @@ class BusinessAuthController extends Controller
 
         // $validatedData = $validator->validated();
 
+        if ($request->hasFile('cover')) {
+            $coverPath = Helper::uploadImage($request->file('cover'), 'business_profiles');
+
+        }
         $data = User::create([
             'full_name' => $request->full_name,
             'date_of_birth' => $request->date_of_birth,
@@ -49,7 +56,12 @@ class BusinessAuthController extends Controller
             'email' => $request->email,
             'password' => bcrypt($request->password),
             'role' => 'business',
+            'avatar' => $coverPath
         ]);
+
+        // cover with url
+        $data->avatar = $data->avatar ? url($data->avatar) : null;
+
 
         // generate token
         $token = auth('api')->login($data);
@@ -84,7 +96,7 @@ class BusinessAuthController extends Controller
                 'user_name' => $user->user_name,
                 'email' => $user->email,
                 'token' => $token,
-                'is_business' => $user->businessProfile ? true : false
+                'is_business' => $user->businessProfile ? true : false,
 
             ];
 
@@ -118,13 +130,10 @@ class BusinessAuthController extends Controller
         return $this->success($user, 'Profile retrieved successfully.');
     }
 
-
-
     // user profile edit
     public function edit()
     {
         $user = auth('api')->user();
-
 
         if (!$user) {
             return $this->error([], 'User not found.', 404);
@@ -149,7 +158,7 @@ class BusinessAuthController extends Controller
         // dd($request->all());
         $validator = Validator::make($request->all(), [
             'full_name' => 'required|string|max:255',
-           'email' => 'required|email|unique:users,email|max:255',
+            'email' => 'required|email|unique:users,email|max:255',
             'date_of_birth' => 'required|string|max:255',
             'gender' => 'required|string|max:255',
             'phone' => 'required|string|max:255',
@@ -158,7 +167,6 @@ class BusinessAuthController extends Controller
         if ($validator->fails()) {
             return $this->error([], $validator->errors()->first(), 422);
         }
-
 
         $user = auth('api')->user();
         $user->full_name = $request->full_name;
@@ -177,12 +185,8 @@ class BusinessAuthController extends Controller
 
         ];
 
-
-
-
         return $this->success($user, 'Profile updated successfully.');
     }
-
 
     // send otp to email
     public function requestOtp(Request $request)
@@ -271,7 +275,6 @@ class BusinessAuthController extends Controller
 
         return response()->json(['message' => 'Password reset successfully.'], 200);
     }
-
 
     public function logout()
     {

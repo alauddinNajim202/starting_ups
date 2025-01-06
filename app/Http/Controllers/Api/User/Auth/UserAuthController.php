@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\Api\User\Auth;
 
-use App\Http\Controllers\Controller;
-use App\Mail\OtpMailNotification;
-use App\Models\User;
-use App\Traits\ApiResponse;
 use Exception;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Validator;
+use App\Models\User;
+use App\Helper\Helper;
+use App\Traits\ApiResponse;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Mail\OtpMailNotification;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Validator;
 
 class UserAuthController extends Controller
 {
@@ -42,9 +43,15 @@ class UserAuthController extends Controller
             return $this->error([], $validator->errors()->first(), 422);
         }
 
+        if ($request->hasFile('cover')) {
+            $coverPath = Helper::uploadImage($request->file('cover'), 'business_profiles');
+
+        }
+
         // $validatedData = $validator->validated();
 
         $data = User::create([
+            'avatar' => $coverPath,
             'full_name' => $request->full_name,
             'user_name' => $request->user_name,
             'email' => $request->email,
@@ -59,7 +66,13 @@ class UserAuthController extends Controller
             'country' => $request->country,
             // 'street_address' => $request->street_address,
             // 'city' => $request->city,
+
         ]);
+
+         // cover with url
+         $data->avatar = $data->avatar ? url($data->avatar) : null;
+
+
 
         // generate token
         $token = auth('api')->login($data);

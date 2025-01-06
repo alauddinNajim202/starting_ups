@@ -1,16 +1,24 @@
 <?php
 
-use App\Http\Controllers\Api\Business\Auth\BusinessAuthController;
-use App\Http\Controllers\Api\Business\Backend\BusinessProfileController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\User\Backend\UserHomeController;
 use App\Http\Controllers\Api\Business\Backend\EventController;
+use App\Http\Controllers\Api\Business\Auth\BusinessAuthController;
 use App\Http\Controllers\Api\Business\Backend\EventReportController;
 use App\Http\Controllers\Api\Business\Backend\SubscriptionController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\Business\Backend\BusinessProfileController;
 
 // Public Business API Routes
 Route::prefix('business')->group(function () {
     Route::post('register', [BusinessAuthController::class, 'register']);
     Route::post('login', [BusinessAuthController::class, 'login']);
+
+
+    Route::get('categories', [UserHomeController::class, 'categories']);
+    Route::get('sub-categories', [UserHomeController::class, 'sub_categories']);
+
+
+
 });
 
 // Protected Business API Routes

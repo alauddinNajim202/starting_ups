@@ -8,6 +8,7 @@ use App\Models\BusinessProfile;
 use App\Models\Category;
 use App\Models\Event;
 use App\Models\EventClick;
+use App\Models\SubCategory;
 use App\Traits\ApiResponse;
 use Carbon\Carbon;
 
@@ -21,7 +22,7 @@ class UserHomeController extends Controller
     {
         try {
 
-            $categories = Category::all();
+            $categories = Category::with('sub_categories')->get();
 
             if ($categories->isEmpty()) {
                 return $this->error([], 'No categories found', 404);
@@ -32,6 +33,32 @@ class UserHomeController extends Controller
             });
 
             return $this->success($categories, 'Categories retrieved successfully', 200);
+
+        } catch (\Exception $e) {
+
+            return $this->error([], 'Error retrieving categories: ' . $e->getMessage(), 500);
+        }
+    }
+
+
+    public function sub_categories()
+    {
+        try {
+
+            $sub_categories = SubCategory::all();
+
+            if ($sub_categories->isEmpty()) {
+                return $this->error([], 'No categories found', 404);
+            }
+
+            $sub_category = $sub_categories->map(function ($sub_category) {
+                $sub_category->id = $sub_category->id;
+                $sub_category->name = $sub_category->name;
+                return $sub_category;
+            });
+
+
+            return $this->success($sub_category, 'Sub Categories retrieved successfully', 200);
 
         } catch (\Exception $e) {
 
